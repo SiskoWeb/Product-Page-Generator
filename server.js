@@ -12,6 +12,7 @@ const authRoute = require('./routes/authRoute')
 const userRoute = require('./routes/userRoute')
 const productsRoute = require('./routes/productRoute')
 const uploaderRoute = require('./routes/uploaderRoute')
+const orderRoute = require('./routes/orderRoute')
 
 const ApiError = require('./utils/ApiError')
 
@@ -39,6 +40,7 @@ app.use(express.static(path.join(__dirname, 'uploads')))
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/user', userRoute)
 app.use('/api/v1/Products', productsRoute)
+app.use('/api/v1/Orders', orderRoute)
 
 app.use('/api/v1/uploader', uploaderRoute)
 
