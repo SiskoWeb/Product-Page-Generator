@@ -2,17 +2,7 @@ const expressAsyncHandler = require('express-async-handler')
 const Order = require('../models/orderModel')
 const Product = require('../models/productModel')
 const factory = require('./handlersFactory')
-const ApiError = require('../utils/apiError')
-
-// const calcTotalCartPrice = (order) => {
-//     let totalPrice = 0;
-//     order.cartItems.forEach((item) => {
-//         totalPrice += item.quantity * item.price;
-//     });
-//     order.totalCartPrice = totalPrice;
-//     order.totalPriceAfterDiscount = undefined;
-//     return totalPrice;
-// };
+const ApiError = require('../utils/ApiError')
 
 
 
@@ -27,7 +17,7 @@ exports.CreateOrder = expressAsyncHandler(async (req, res, next) => {
         cartItems: req.body.cartItems,
         shippingAddress: req.body.shippingAddress,
         totalOrderPrice: req.body.totalOrderPrice,
-        owner: req.body.owner
+        user: req.user._id
 
     })
 
@@ -51,13 +41,42 @@ exports.CreateOrder = expressAsyncHandler(async (req, res, next) => {
 
 
 
+// @desc    Get All category
+// @route   GET /api/v1/Prodcuts/:id
+// @access    Protected/Admin
+exports.getAllPOrders = expressAsyncHandler(async (req, res) => {
+
+    //1) filter order by userid{get only order belong this userID}
+    const Orders = await OrderModel.find({ user: req.user._id })
+
+
+    if (!Orders) {
+        return next(
+            new ApiError(`There is no Product for this user id : ${req.user._id}`, 404)
+        );
+    }
+
+    res.status(200).json({
+        status: 'success',
+        result: Orders.length,
+        data: Orders,
+    });
+})
+
+
+
+
+
+
+
+
 // @desc    Update order delivered status
 // @route   PUT /api/v1/orders/:id/deliver
 // @access  Protected/Admin
 exports.updateIsDelivered = expressAsyncHandler(async (req, res, next) => {
 
     //1) get order from db by id
-    const order = await Order.findById(req.params.id)
+    const order = await OrderModel.findById(req.params.id)
 
     if (!order) {
         return next(new ApiError(`there is no Order belong this id ${req.params.id}`, 400))
@@ -77,20 +96,19 @@ exports.updateIsDelivered = expressAsyncHandler(async (req, res, next) => {
 
 
 
-// @desc    Get All category
-// @route   GET /api/v1/Prodcuts/:id
-// @access    Protected/Admin
-exports.getAllPOrders = factory.getAll(Order)
+
+
+
 
 
 // @desc    Get specific Order
 // @route   GET /api/v1/Order/:id
 // @access    Protected/Admin
-exports.getOneOrder = factory.getOne(Order)
+exports.getOneOrder = factory.getOne(OrderModel)
 
 
 
 // @desc    Delete specific Order
 // @route   DELETE /api/v1/Order/:id
 // @access    Protected/Admin
-exports.deleteOrder = factory.deleteOne(Order)
+exports.deleteOrder = factory.deleteOne(OrderModel)
