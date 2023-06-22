@@ -1,5 +1,5 @@
 const expressAsyncHandler = require('express-async-handler')
-const Order = require('../models/orderModel')
+const OrderModel = require('../models/orderModel')
 const Product = require('../models/productModel')
 const factory = require('./handlersFactory')
 const ApiError = require('../utils/ApiError')
@@ -92,6 +92,27 @@ exports.updateIsDelivered = expressAsyncHandler(async (req, res, next) => {
     res.status(200).json({ status: "success", data: UpdatedOrder })
 })
 
+// @desc    Update order delivered status
+// @route   PUT /api/v1/orders/:id/deliver
+// @access  Protected/Admin
+exports.updateIsShipped = expressAsyncHandler(async (req, res, next) => {
+
+    //1) get order from db by id
+    const order = await OrderModel.findById(req.params.id)
+
+    if (!order) {
+        return next(new ApiError(`there is no Order belong this id ${req.params.id}`, 400))
+
+    }
+
+    //2) Update is Deleverd
+    order.isShipped = !order.isShipped
+
+
+    const UpdatedOrder = await order.save();
+
+    res.status(200).json({ status: "success", data: UpdatedOrder })
+})
 
 
 

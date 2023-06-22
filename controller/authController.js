@@ -18,7 +18,7 @@ const SECRET_KEY_JWT = 'Yassine.info'
 
 // create token by passing id user
 const createToken = (payload) =>
-  jwt.sign({ userId: payload }, "process.env.SECRET_KEY_JWT", {
+  jwt.sign({ userId: payload }, Jwt, {
     expiresIn: '90d'
   })
 
@@ -87,7 +87,7 @@ exports.protect = expressAsyncHandler(async (req, res, next) => {
 
   //2) decoded Token 
   // token wont split
-  const decoded = jwt.verify(token, "process.env.SECRET_KEY_JWT")
+  const decoded = jwt.verify(token, Jwt)
 
   //3) check if user exist 
 

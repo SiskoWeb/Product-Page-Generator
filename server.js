@@ -1,20 +1,17 @@
 const express = require('express')
 const app = express()
-
 const dotenv = require('dotenv')
-
 const globalError = require('./middleWares/errorMiddleWar')
-
 const dbContact = require('./config/Db')
-
 const path = require('path')
 const authRoute = require('./routes/authRoute')
 const userRoute = require('./routes/userRoute')
 const productsRoute = require('./routes/productRoute')
 const uploaderRoute = require('./routes/uploaderRoute')
 const orderRoute = require('./routes/orderRoute')
-
 const ApiError = require('./utils/ApiError')
+
+const cors = require('cors');
 
 dotenv.config({ path: './config.env' })
 
@@ -23,7 +20,7 @@ dotenv.config({ path: './config.env' })
 // Parse JSON bodies
 app.use(express.json())
 
-
+app.use(cors({ origin: 'http://127.0.0.1:5173' }))
 
 
 
